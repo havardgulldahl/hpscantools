@@ -1,4 +1,3 @@
-
 package main
 
 import (
@@ -18,7 +17,7 @@ type ScanSettings struct {
     Width           int         `xml:"Width"`  // 2550
     Height          int         `xml:"Height"` // 3507
     Format          string      `xml:"Format"` // "Raw", "Jpeg"
-    CompressionQFactor int      `xml:"CompressionQFactor"` // 15
+    CompressionQFactor int      `xml:"CompressionQFactor"` // 0, 15
     ColorSpace      string      `xml:"ColorSpace"` // "Color"
     BitDepth        int         `xml:"BitDepth"` // 8
     InputSource     string      `xml:"InputSource"` // "Platen"
@@ -34,8 +33,27 @@ type ScanSettings struct {
     ContentType     string      `xml:"ContentType"` // "Photo", 
 }
 
+func DefaultSettings() *ScanSettings {
+    return &ScanSettings{XResolution: 200, YResolution:200, XStart:0, YStart:0, Width: 2550, Height: 3507, Format: "Jpeg", CompressionQFactor: 15, ColorSpace: "Color", BitDepth: 8, InputSource: "Platen", GrayRendering:"NTSC", Gamma: 1000, Brightness: 1000, Contrast: 1000, Highlite: 179,Shadow: 25, Threshold: 0, SharpeningLevel: 128, NoiseRemoval: 0, ContentType: "Photo"}
+}
+
+func JpegScanSettings(xres int, yres int) *ScanSettings {
+    s := DefaultSettings()
+    s.XResolution = xres
+    s.YResolution = yres
+    return s
+}
+
+func RawScanSettings(xres int, yres int) *ScanSettings {
+    s := DefaultSettings()
+    s.XResolution = xres
+    s.YResolution = yres
+    s.Format = "Raw"
+    s.CompressionQFactor = 0
+    return s
+}
+
 type CancelScan struct {
-    //job_request += "<Job xmlns=\"http://www.hp.com/schemas/imaging/con/ledm/jobs/2009/04/30\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.hp.com/schemas/imaging/con/ledm/jobs/2009/04/30 Jobs.xsd\">"
     XMLName         xml.Name    `xml:"http://www.hp.com/schemas/imaging/con/ledm/jobs/2009/04/30 Job"`
     JobUrl          string                  // The job url from POST-ing SystemSettings
     JobState        string                  // "Canceled"
@@ -43,7 +61,8 @@ type CancelScan struct {
 
 
 func main() {
-    s := &ScanSettings{ XResolution:200, YResolution:201 }
+    //s := &ScanSettings{ XResolution:200, YResolution:201 }
+    s := RawScanSettings(200, 200)
     xmlString, err := xml.MarshalIndent(s, "", "    ")
 
     if err != nil {
@@ -54,5 +73,5 @@ func main() {
 
     cs := &CancelScan{ JobUrl: "2323", JobState: "Canceled" }
     xmlString2, _ := xml.MarshalIndent(cs, "", "    ")
-    os.Stdout.Write(xmlString2)
+    os.Stdout.Write([]byte( xml.Header+string(xmlString2)))
 }
