@@ -1,12 +1,12 @@
 package main
 
 import (
-        "fmt"
-        //"io/ioutil"
-        "os"
-        "encoding/xml"
+    "bytes"
+    "fmt"
+    "net/http"
+    "io/ioutil"
+    "encoding/xml"
 )
-
 
 type ScanSettings struct {
     XMLName         xml.Name    `xml:"http://www.hp.com/schemas/imaging/con/cnx/scan/2008/08/19 ScanSettings"`
@@ -59,19 +59,24 @@ type CancelScan struct {
     JobState        string                  // "Canceled"
 }
 
-
 func main() {
-    //s := &ScanSettings{ XResolution:200, YResolution:201 }
     s := RawScanSettings(200, 200)
     xmlString, err := xml.MarshalIndent(s, "", "    ")
 
     if err != nil {
             fmt.Println(err)
     }
+    payload := bytes.NewBuffer([]byte ( xml.Header+string(xmlString) ))
+    //payload := bytes.NewBuffer(xmlString)
 
-    fmt.Printf("%s \n", string(xmlString))
+    fmt.Printf("%s \n", payload)
 
-    cs := &CancelScan{ JobUrl: "2323", JobState: "Canceled" }
-    xmlString2, _ := xml.MarshalIndent(cs, "", "    ")
-    os.Stdout.Write([]byte( xml.Header+string(xmlString2)))
+    resp, err := http.Post("http://httpbin.org/post", "test/xml", payload)
+
+    defer resp.Body.Close()
+
+    body, err := ioutil.ReadAll(resp.Body)
+
+    fmt.Printf("%s \n", body)
+
 }
