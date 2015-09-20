@@ -1,0 +1,24 @@
+### curl -s -v -X POST -d @WalkupScanDestination.xml --header 'Content-Type: text/xml' http://$printerIP/WalkupScan/WalkupScanDestinations
+##
+#
+
+* Hostname was NOT found in DNS cache
+*   Trying 192.168.0.196...
+* Connected to 192.168.0.196 (192.168.0.196) port 8080 (#0)
+> POST /WalkupScan/WalkupScanDestinations HTTP/1.1
+> User-Agent: curl/7.38.0
+> Host: 192.168.0.196:8080
+> Accept: */*
+> Content-Type: text/xml
+> Content-Length: 544
+>
+* upload completely sent off: 544 out of 544 bytes
+< HTTP/1.1 201 Created
+* Server HP HTTP Server; HP Deskjet 3050A J611 series - CR231B; Serial Number: CN1AQ5835B05PJ; Sumbamlk_pp Built:Tue Apr 12, 2011 04:08:55PM {SMP1FN1115AR, ASIC id 0x00340100} is not blacklisted
+< Server: HP HTTP Server; HP Deskjet 3050A J611 series - CR231B; Serial Number: CN1AQ5835B05PJ; Sumbamlk_pp Built:Tue Apr 12, 2011 04:08:55PM {SMP1FN1115AR, ASIC id 0x00340100}
+< Location: http://192.168.0.196:8080/WalkupScan/WalkupScanDestinations/2b027e8a-8a78-1f46-a12e-e4115b85aeeb
+< Cache-Control: must-revalidate, max-age=0
+< Pragma: no-cache
+< Content-Length: 0
+<
+* Connection #0 to host 192.168.0.196 left intact
