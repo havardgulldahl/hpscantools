@@ -10,8 +10,7 @@ import (
 
 
 type ScanSettings struct {
-
-    XMLName         xml.Name    `xml:"ScanSettings"`
+    XMLName         xml.Name    `xml:"http://www.hp.com/schemas/imaging/con/cnx/scan/2008/08/19 ScanSettings"`
     XResolution     int         `xml:"XResolution"` // 200
     YResolution     int         `xml:"YResolution"` // 200
     XStart          int         `xml:"XStart"` // 0
@@ -35,6 +34,12 @@ type ScanSettings struct {
     ContentType     string      `xml:"ContentType"` // "Photo", 
 }
 
+type CancelScan struct {
+    //job_request += "<Job xmlns=\"http://www.hp.com/schemas/imaging/con/ledm/jobs/2009/04/30\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.hp.com/schemas/imaging/con/ledm/jobs/2009/04/30 Jobs.xsd\">"
+    XMLName         xml.Name    `xml:"http://www.hp.com/schemas/imaging/con/ledm/jobs/2009/04/30 Job"`
+    JobUrl          string                  // The job url from POST-ing SystemSettings
+    JobState        string                  // "Canceled"
+}
 
 
 func main() {
@@ -46,5 +51,8 @@ func main() {
     }
 
     fmt.Printf("%s \n", string(xmlString))
-    os.Stdout.Write(xmlString)
+
+    cs := &CancelScan{ JobUrl: "2323", JobState: "Canceled" }
+    xmlString2, _ := xml.MarshalIndent(cs, "", "    ")
+    os.Stdout.Write(xmlString2)
 }
