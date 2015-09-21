@@ -67,11 +67,15 @@ func main() {
             fmt.Println(err)
     }
     payload := bytes.NewBuffer([]byte ( xml.Header+string(xmlString) ))
-    //payload := bytes.NewBuffer(xmlString)
 
     fmt.Printf("%s \n", payload)
 
     resp, err := http.Post("http://httpbin.org/post", "test/xml", payload)
+    for k, v := range resp.Header {
+        fmt.Printf("key:%s, value:%s \n", k, v)
+    }
+    location := resp.Header.Get("Location")
+    fmt.Printf("Location: --%s--", location)
 
     defer resp.Body.Close()
 
